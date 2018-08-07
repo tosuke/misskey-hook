@@ -12,15 +12,6 @@ if (firebase.apps.length === 0) {
     storageBucket: process.env.STORAGE_BUCKET,
     messagingSenderId: process.env.MESSAGING_SENDER_ID
   })
-
-  if (localStorage.getItem('auth-session-id')) {
-    const session = localStorage.getItem('auth-session-id')
-    localStorage.removeItem('auth-session-id')
-    const functions = firebase.app().functions('asia-northeast1')
-    functions.httpsCallable('createOpenIDToken')({ sessionId: session }).then(({ data: { token }}) => {
-      return firebase.auth().signInWithCustomToken(token)
-    })
-  }
 }
 
 export default firebase

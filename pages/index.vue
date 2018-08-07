@@ -1,58 +1,78 @@
 <template>
-  <section class="container">
-    <div>
-      <button @click="login">login</button>
-    </div>
-  </section>
+  <v-layout justify-center>
+    <v-list>
+      <v-subheader>Webhook一覧</v-subheader>
+      <template v-for="hook in hooks">
+        <hook-card :key="hook.id" :hook="hook"/>
+        <v-divider :key="hook.id + '!'"/>
+      </template>
+      <v-layout justify-center>
+        <v-dialog v-model="dialog" width="500">
+          <v-btn slot="activator" color="pink" dark icon>
+            <v-icon>add</v-icon>
+          </v-btn>
+          <v-card>
+            <v-card-title><span class="headline">Webhookを作成</span></v-card-title>
+            <v-card-text>
+              <v-container grid-list-md>
+                <v-layout wrap>
+                  <v-flex xs12 sm6 md4>
+                    <v-text-field label="Webhookの名前" :rules="[rules.required]" v-model="name"/>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer/>
+              <v-btn color="blue darken-1" dark flat @click.native="createHook">作成</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-layout>
+      <v-divider/>
+      <v-subheader>アカウント管理</v-subheader>
+      <v-btn color="blue" dark @click="signOut">ログアウト</v-btn>
+    </v-list>
+  </v-layout>
 </template>
 
 <script>
-import AppLogo from '~/components/AppLogo.vue'
+import HookCard from '~/components/HookCard.vue'
 import firebase from '~/plugins/firebase'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   components: {
-    AppLogo
+    HookCard
+  },
+  middleware: 'authenticated',
+  data() {
+    return {
+      dialog: false,
+      name: null,
+      rules: {
+        required: val => !!val || '必須です。'
+      }
+    }
   },
   methods: {
-    async login() {
-      const functions = firebase.app().functions('asia-northeast1')
-      const { data } = await functions.httpsCallable('generateSession')()
-      localStorage.setItem('auth-session-id', data.token)
-      location.href = data.url
+    async signOut() {
+      await this.$store.dispatch('signOut')
+      this.$router.push('/auth')
+    },
+    async createHook() {
+      if (!this.name) return
+      this.dialog = false
+      await this.$store.dispatch('createHook', { name: this.name })
+      this.name = ''
     }
+  },
+  computed: {
+    ...mapState(['user', 'hooks'])
   }
 }
 </script>
 
 <style>
-.container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* 1 */
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
 </style>
 

@@ -5,8 +5,10 @@
   "author": "Tosuke <tasukeprg@gmail.com>",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
-    "build": "nuxt generate",
+    "dev": "nuxt --spa --port 5000",
+    "build": "run-p build:*",
+    "build:client": "nuxt build --spa",
+    "build:functions": "cpx .env functions",
     "serve": "run-s build serve:firebase",
     "serve:firebase": "firebase serve --only hosting,functions",
     "deploy": "run-s build deploy:firebase",
@@ -35,13 +37,18 @@
     "@firebase/functions": "^0.3.0",
     "@nuxtjs/axios": "^5.3.1",
     "@nuxtjs/dotenv": "^1.1.1",
+    "@nuxtjs/vuetify": "^0.4.2",
     "firebase": "^5.3.0-1",
-    "nuxt-edge": "^2.0.0-25550715.56db988"
+    "material-design-icons-iconfont": "^3.0.3",
+    "nuxt-edge": "^2.0.0-25550715.56db988",
+    "vue-clipboard2": "^0.2.1",
+    "vuexfire": "^3.0.0-alpha.5"
   },
   "devDependencies": {
     "@firebase/app-types": "^0.3.2",
     "@tosuke/prettier-config": "^1.0.1",
     "babel-eslint": "^8.2.1",
+    "cpx": "^1.5.0",
     "eslint": "^4.15.0",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^1.7.1",

@@ -15,7 +15,9 @@ export default {
   ** Customize the progress bar color
   */
   loading: { color: '#3B8070' },
-  modules: ['@nuxtjs/axios', '@nuxtjs/dotenv'],
+  modules: ['@nuxtjs/vuetify', '@nuxtjs/axios', '@nuxtjs/dotenv'],
+  plugins: ['~/plugins/clipboard', '~/plugins/clientInit'],
+  css: ['material-design-icons-iconfont/dist/material-design-icons.css'],
   /*
   ** Build configuration
   */
