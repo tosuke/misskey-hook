@@ -109,8 +109,15 @@ exports.hook = functions.region('asia-northeast1').https.onRequest(async (req, r
     const ids = await Promise.all(imageUrls.map(url => resolveURL(url, token)))
 
     const mediaIds = [...(params.mediaIds || []), ...ids]
+    let post = {
+      i: token,
+      ...params
+    }
+    if (mediaIds.length > 0) {
+      post.mediaIds = mediaIds
+    }
 
-    const { data } = await misskey.post('/notes/create', { i: token, ...params, mediaIds }, { httpsAgent })
+    const { data } = await misskey.post('/notes/create', post, { httpsAgent })
     res.json(data).end()
   } catch (err) {
     res
