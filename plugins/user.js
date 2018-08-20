@@ -5,10 +5,15 @@ export default async function() {
     const session = localStorage.getItem('auth-session-id')
     localStorage.removeItem('auth-session-id')
     const functions = firebase.app().functions('asia-northeast1')
-    const {
-      data: { token }
-    } = await functions.httpsCallable('createOpenIDToken')({ sessionId: session })
-    await firebase.auth().signInWithCustomToken(token)
+
+    try {
+      const {
+        data: { token }
+      } = await functions.httpsCallable('createOpenIDToken')({ sessionId: session })
+      await firebase.auth().signInWithCustomToken(token)
+    } catch (err) {
+      console.error(err)
+    }
   }
   const user = firebase.auth().currentUser
   if (user) {

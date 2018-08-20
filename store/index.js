@@ -13,12 +13,16 @@ const createStore = () =>
   new Vuex.Store({
     state: {
       hooks: [],
-      user: null
+      user: null,
+      uid: null
     },
     mutations: {
       ...firebaseMutations,
       setUser(state, { user }) {
         state.user = user
+      },
+      setUid(state, { uid }) {
+        state.uid = uid
       }
     },
     actions: {
@@ -33,6 +37,7 @@ const createStore = () =>
           .doc(uid)
           .get()
         commit('setUser', { user: userDoc.data() })
+        commit('setUid', { uid })
       },
       initHooks: firebaseAction(async ({ bindFirebaseRef }) => {
         const uid = await uidTask
@@ -49,23 +54,29 @@ const createStore = () =>
       },
       async createHook({ state }, { name }) {
         const {
+          host,
           accessToken,
-          user: { id: uid }
         } = state.user
+
+        const uid = state.uid
+
         const hooksRef = db
           .collection('users')
           .doc(uid)
           .collection('hooks')
+
+        // TODO: Use Transation
         const hookRef = await hooksRef.add({
           name,
-          token: accessToken
+          host,
+          token: accessToken,
         })
         await hookRef.update({
           id: hookRef.id
         })
       },
       async deleteHook({ state }, { id }) {
-        const uid = state.user.user.id
+        const uid = state.uid
         const hookRef = db.collection('users').doc(uid).collection('hooks').doc(id)
         await hookRef.delete()
       }

@@ -22,10 +22,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user']),
+    ...mapState(['user', 'uid']),
     url() {
       const base = `https://asia-northeast1-${process.env.PROJECT_ID}.cloudfunctions.net/hook`
-      const uid = this.user.user.id
+      const uid = this.uid 
       const id = this.hook.id
       return `${base}?uid=${uid}&id=${id}`
     }
