@@ -15,11 +15,7 @@ async function appSecret(host = 'misskey.xyz') {
   } else {
     // TODO: Create App
     try {
-      const permission = [
-        'note-write',
-        'drive-read',
-        'drive-write'
-      ]
+      const permission = ['note-write', 'drive-read', 'drive-write']
       const { data: app } = await misskey(host).post('/app/create', {
         name: process.env.APP_NAME,
         description: process.env.APP_DESCRIPTION,

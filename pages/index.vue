@@ -1,6 +1,5 @@
 <template>
-  <v-layout justify-center>
-    <v-list>
+  <v-layout align-center justify-center column fill-height>
       <v-subheader>Webhook一覧</v-subheader>
       <template v-for="hook in hooks">
         <hook-card :key="hook.id" :hook="hook"/>
@@ -31,8 +30,8 @@
       </v-layout>
       <v-divider/>
       <v-subheader>アカウント管理</v-subheader>
+      <span class="subtitle">{{ screenName }}にログインしています。</span>
       <v-btn color="blue" dark @click="signOut">ログアウト</v-btn>
-    </v-list>
   </v-layout>
 </template>
 
@@ -68,7 +67,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user', 'hooks'])
+    ...mapState(['user', 'hooks']),
+    screenName() {
+      return `@${this.user.user.username}@${this.user.host}`
+    }
   }
 }
 </script>
